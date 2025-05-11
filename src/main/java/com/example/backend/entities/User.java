@@ -21,21 +21,13 @@ public class User {
     @Column(name = "username")
     private String username;
 
-    @Column(name = "password")
-    private String password;
-
     @Column(name = "email")
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<Note> notes;
+    @Column(name = "password")
+    private String password;
 
-    public void addNote(Note note) {
-        notes.add(note);
-        note.setAuthor(this);
-    }
-    public void removeNote(Note note) {
-        notes.remove(note);
-    }
+    @OneToMany(mappedBy = "author", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private Set<Note> notes;
 
 }
