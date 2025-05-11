@@ -9,10 +9,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,5 +31,18 @@ public class UserController {
                 .toList();
     }
 
-    public ResponseEntity<UserDto> getUserById(@RequestParam(required = true, name = "id") String id) {}
+    @GetMapping("/{user_id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable(required = true, name = "user_id") Long user_id) {
+        var user = userRepository.findById(user_id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userMapper.toUserDto(user));
+    }
+
+    @PostMapping()
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        var id = userDto.getId();
+        return null;
+    }
 }
