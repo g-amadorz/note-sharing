@@ -37,10 +37,10 @@ public class NoteController {
     }
 
     @GetMapping("/{noteId}")
-    public ResponseEntity<Note> getNote(@PathVariable Long userId, @PathVariable Long noteId) {
+    public ResponseEntity<NoteDto> getNote(@PathVariable Long userId, @PathVariable Long noteId) {
         try {
-            var note = userService.getNoteFromUser(userId, noteId);
-            return ResponseEntity.ok(note);
+            var noteDto = userService.getNoteFromUser(userId, noteId);
+            return ResponseEntity.ok(noteDto);
         } catch (EntityNotFoundException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
