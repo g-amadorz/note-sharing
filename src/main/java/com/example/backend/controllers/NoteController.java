@@ -6,7 +6,6 @@ import com.example.backend.entities.Note;
 import com.example.backend.exceptions.EntityNotFoundException;
 import com.example.backend.exceptions.NoteNotFoundException;
 import com.example.backend.exceptions.UserNotFoundException;
-import com.example.backend.repositories.NoteRepository;
 import com.example.backend.services.NoteService;
 import com.example.backend.services.UserService;
 import lombok.AllArgsConstructor;
@@ -39,8 +38,8 @@ public class NoteController {
     @GetMapping("/{noteId}")
     public ResponseEntity<NoteDto> getNote(@PathVariable Long userId, @PathVariable Long noteId) {
         try {
-            var noteDto = userService.getNoteFromUser(userId, noteId);
-            return ResponseEntity.ok(noteDto);
+            var note = userService.getNoteFromUser(userId, noteId);
+            return ResponseEntity.ok(noteService.getNoteDto(note));
         } catch (EntityNotFoundException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();

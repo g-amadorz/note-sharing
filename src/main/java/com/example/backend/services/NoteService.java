@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class NoteService {
-    private NoteRepository noteRepository;
-    private NoteMapper noteMapper;
+    private final NoteRepository noteRepository;
+    private final NoteMapper noteMapper;
 
     public Note getNoteById(Long id) throws NoteNotFoundException {
         return noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
@@ -26,6 +26,10 @@ public class NoteService {
         note.setContent(request.getContent());
         note.setAuthor(user);
         noteRepository.save(note);
+        return noteMapper.toNoteDto(note);
+    }
+
+    public NoteDto getNoteDto(Note note) {
         return noteMapper.toNoteDto(note);
     }
 }
