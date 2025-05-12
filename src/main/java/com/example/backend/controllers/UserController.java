@@ -1,15 +1,16 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dtos.CreateUserRequest;
 import com.example.backend.dtos.UserDto;
 import com.example.backend.entities.User;
 import com.example.backend.mappers.UserMapper;
 import com.example.backend.repositories.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -41,8 +42,30 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
-        var id = userDto.getId();
-        return null;
+    public ResponseEntity<UserDto> createUser(
+            UriComponentsBuilder uriBuilder,
+            @RequestBody CreateUserRequest request) {
+        var email = request.getEmail();
+        var username = request.getUsername();
+
+        if (userRepository.existsByEmail(email) || userRepository.existsByUsername(username)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        var user = userMapper.createUser(request);
+        userRepository.save(user);
+        var userDto = userMapper.toUserDto(user);
+        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(userDto);
+    }
+
+    @DeleteMapping("{user_id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable(required = true, name = "user_id") Long user_id) {
+        var user = userRepository.findById(user_id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        userRepository.deleteById(user_id);
+        return ResponseEntity.noContent().build();
     }
 }
