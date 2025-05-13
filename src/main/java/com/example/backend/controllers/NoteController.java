@@ -48,12 +48,22 @@ public class NoteController {
     @PostMapping
     public ResponseEntity<NoteDto> createNote(
             UriBuilder uriBuilder,
-            @PathVariable Long userId, @RequestBody CreateNoteRequest request) {
+            @PathVariable(name="userId") Long userId, @RequestBody CreateNoteRequest request) {
         try {
             var user = userService.getUserById(userId);
             var uri = uriBuilder.path("/users/{userId}/notes").build(userId);
             return ResponseEntity.created(uri).body(noteService.createNote(request, user));
         } catch (UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{noteId}")
+    public ResponseEntity<Void> deleteNote(@PathVariable(name="userId") Long userId, @PathVariable(name = "noteId") Long noteId) {
+        try {
+            noteService.deleteNoteById(noteId);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

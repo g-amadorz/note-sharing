@@ -1,7 +1,6 @@
 package com.example.backend.services;
 
 import com.example.backend.dtos.CreateUserRequest;
-import com.example.backend.dtos.NoteDto;
 import com.example.backend.dtos.UserDto;
 import com.example.backend.entities.Note;
 import com.example.backend.entities.User;
@@ -56,4 +55,6 @@ public class UserService {
         var userDto = userMapper.toUserDto(user);
         return userDto;
     }
+
+
 }
