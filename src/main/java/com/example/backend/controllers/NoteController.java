@@ -2,9 +2,7 @@ package com.example.backend.controllers;
 
 import com.example.backend.dtos.CreateNoteRequest;
 import com.example.backend.dtos.NoteDto;
-import com.example.backend.entities.Note;
 import com.example.backend.exceptions.EntityNotFoundException;
-import com.example.backend.exceptions.NoteNotFoundException;
 import com.example.backend.exceptions.UserNotFoundException;
 import com.example.backend.services.NoteService;
 import com.example.backend.services.UserService;
@@ -21,18 +19,17 @@ import java.util.Set;
 @RestController
 @RequestMapping("/users/{userId}/notes")
 public class NoteController {
-    private UserService userService;
-    private NoteService noteService;
+    private final UserService userService;
+    private final NoteService noteService;
 
     @GetMapping
-    public ResponseEntity<Set<Note>> getAllNotes(@PathVariable Long userId) {
-        var user = userService.getUserById(userId);
-        if (user == null) {
-           return ResponseEntity.notFound().build();
+    public ResponseEntity<Set<NoteDto>> getAllNotes(@PathVariable Long userId) {
+        try {
+            var notes = noteService.getUserNotesById(userId);
+            return ResponseEntity.ok(notes);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
-        Set<Note> notes = user.getNotes();
-
-        return ResponseEntity.ok(notes);
     }
 
     @GetMapping("/{noteId}")

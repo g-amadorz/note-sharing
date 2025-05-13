@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import com.example.backend.dtos.NoteDto;
 import com.example.backend.dtos.UserDto;
 import com.example.backend.entities.Note;
 import com.example.backend.entities.User;
@@ -10,12 +11,12 @@ import com.example.backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final NoteService noteService;
 
     public UserDto createUser(User user) {
         return userMapper.toUserDto(userRepository.save(user));
@@ -34,5 +35,4 @@ public class UserService {
                         .findFirst()
                         .orElseThrow(() -> new NoteNotFoundException(noteId));
     }
-
 }

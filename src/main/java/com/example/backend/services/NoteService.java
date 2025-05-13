@@ -10,6 +10,9 @@ import com.example.backend.repositories.NoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class NoteService {
@@ -32,4 +35,9 @@ public class NoteService {
     public NoteDto getNoteDto(Note note) {
         return noteMapper.toNoteDto(note);
     }
+
+    public Set<NoteDto> getUserNotesById(Long userId) {
+        return noteRepository.getNotesByAuthor_Id(userId).stream().map(noteMapper::toNoteDto).collect(Collectors.toSet());
+    }
+
 }
