@@ -11,6 +11,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriBuilder;
 
 import java.util.Set;
 
@@ -45,10 +46,13 @@ public class NoteController {
     }
 
     @PostMapping
-    public ResponseEntity<NoteDto> createNote(@PathVariable Long userId, @RequestBody CreateNoteRequest request) {
+    public ResponseEntity<NoteDto> createNote(
+            UriBuilder uriBuilder,
+            @PathVariable Long userId, @RequestBody CreateNoteRequest request) {
         try {
             var user = userService.getUserById(userId);
-            return ResponseEntity.ok(noteService.createNote(request, user));
+            var uri = uriBuilder.path("/users/{userId}/notes").build(userId);
+            return ResponseEntity.created(uri).body(noteService.createNote(request, user));
         } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
