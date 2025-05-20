@@ -2,13 +2,11 @@ package com.example.backend.controllers;
 
 import com.example.backend.dtos.CreateUserRequest;
 import com.example.backend.dtos.UserDto;
-import com.example.backend.entities.User;
 import com.example.backend.exceptions.UserNotFoundException;
 import com.example.backend.mappers.UserMapper;
 import com.example.backend.repositories.UserRepository;
-import com.example.backend.services.UserService;
+import com.example.backend.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

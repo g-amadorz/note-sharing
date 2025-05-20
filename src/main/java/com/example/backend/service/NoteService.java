@@ -1,14 +1,14 @@
-package com.example.backend.services;
+package com.example.backend.service;
 
 import com.example.backend.dtos.CreateNoteRequest;
 import com.example.backend.dtos.NoteDto;
+import com.example.backend.dtos.UpdateNoteRequest;
 import com.example.backend.entities.Note;
-import com.example.backend.entities.User;
 import com.example.backend.exceptions.NoteNotFoundException;
-import com.example.backend.exceptions.UserNotFoundException;
 import com.example.backend.mappers.NoteMapper;
 import com.example.backend.repositories.NoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -24,11 +24,8 @@ public class NoteService {
         return noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
     }
 
-    public NoteDto createNote(CreateNoteRequest request, User user) throws NoteNotFoundException {
-        Note note = new Note();
-        note.setTitle(request.getTitle());
-        note.setContent(request.getContent());
-        note.setAuthor(user);
+    public NoteDto createNote(CreateNoteRequest request) {
+        Note note = noteMapper.createNote(request);
         noteRepository.save(note);
         return noteMapper.toNoteDto(note);
     }
@@ -46,4 +43,11 @@ public class NoteService {
         noteRepository.deleteById(noteId);
     }
 
+    public NoteDto updateNote(Long noteId, UpdateNoteRequest request) throws NoteNotFoundException {
+        var note = getNoteById(noteId);
+        noteMapper.update(request, note);
+        System.out.println(note.getContent());
+        noteRepository.save(note);
+        return noteMapper.toNoteDto(note);
+    }
 }

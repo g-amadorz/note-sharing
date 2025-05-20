@@ -2,13 +2,14 @@ package com.example.backend.controllers;
 
 import com.example.backend.dtos.CreateNoteRequest;
 import com.example.backend.dtos.NoteDto;
+import com.example.backend.dtos.UpdateNoteRequest;
 import com.example.backend.exceptions.EntityNotFoundException;
+import com.example.backend.exceptions.NoteNotFoundException;
 import com.example.backend.exceptions.UserNotFoundException;
-import com.example.backend.services.NoteService;
-import com.example.backend.services.UserService;
+import com.example.backend.service.NoteService;
+import com.example.backend.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriBuilder;
@@ -52,7 +53,7 @@ public class NoteController {
         try {
             var user = userService.getUserById(userId);
             var uri = uriBuilder.path("/users/{userId}/notes").build(userId);
-            return ResponseEntity.created(uri).body(noteService.createNote(request, user));
+            return ResponseEntity.created(uri).body(noteService.createNote(request));
         } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -68,6 +69,17 @@ public class NoteController {
         }
     }
 
+    @PutMapping("{noteId}")
+    public ResponseEntity<NoteDto> updateNote(@PathVariable(name = "userId") Long userId,
+                                              @PathVariable(name = "noteId") Long noteId,
+                                              @RequestBody UpdateNoteRequest request) {
+        try {
+            var noteDto = noteService.updateNote(noteId, request);
+            return ResponseEntity.ok(noteDto);
+        } catch (NoteNotFoundException e) {
+            return ResponseEntity.notFound().build();
+    }
+        }
 
 
 

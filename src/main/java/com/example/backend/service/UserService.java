@@ -1,4 +1,4 @@
-package com.example.backend.services;
+package com.example.backend.service;
 
 import com.example.backend.dtos.CreateUserRequest;
 import com.example.backend.dtos.UserDto;
@@ -55,6 +55,8 @@ public class UserService {
         var userDto = userMapper.toUserDto(user);
         return userDto;
     }
+
+    
 
 
 }
